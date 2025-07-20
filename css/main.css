@@ -1,0 +1,361 @@
+
+.form-control[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+.form-control-readonly {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+.form-control-readonly:focus {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+.width-80px {
+    width: 80px;
+}
+.width-90px {
+    width: 90px;
+}
+.width-95px {
+    width: 95px;
+}
+.width-100px {
+    width: 100px;
+}
+.width-130px {
+    width: 130px;
+}
+.width-140px {
+    width: 140px;
+}
+.width-160px {
+    width: 160px;
+}
+.width-170px {
+    width: 170px;
+}
+.width-200px {
+    width: 250px;
+}
+.width-250px {
+    width: 250px;
+}
+.width-260px {
+    width: 260px;
+}
+.width-290px {
+    width: 290px;
+}
+.width-300px {
+    width: 300px;
+}
+.width-430px {
+    width: 430px;
+}
+
+.min-width-300px {
+    width: 300px;
+}
+
+/* -------------------------------- */
+
+.link-shortcut {
+    margin-left: 4px;
+    margin-right: 4px;
+
+    padding: 5px;
+
+    border: lightgray;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+}
+
+.link-shortcut:hover {
+    background-color: #f8f8f8;
+}
+
+.pos-etiqueta:hover {
+    background-color: #f8f8f8;
+}
+
+/* -------------------------------- */
+
+.indicadorBordeIzquierda {
+    margin-bottom: 10px;
+    padding: 4px 4px 4px 4px;
+}
+
+/* -------------------------------- */
+
+/* Cambiar color del botón btn-success */
+.btn-success {
+    background-color: #ef1833 !important;
+    border-color: #ef1833 !important;
+}
+
+/* Cambiar color cuando el cursor está encima del botón */
+.btn-success:hover, .btn-success:focus {
+    background-color: #d4162b !important;
+    border-color: #d4162b !important;
+}
+
+/* Cambiar color cuando se hace clic en el botón */
+.btn-success:active, .btn-success.active, .open > .dropdown-toggle.btn-success {
+    background-color: #b31223 !important;
+    border-color: #b31223 !important;
+}
+
+/* Cambiar color cuando el botón está enfocado y activo */
+.btn-success:focus:active, .btn-success.active:focus {
+    background-color: #b31223 !important;
+    border-color: #b31223 !important;
+}
+
+.btn-success:disabled,
+.btn-success.disabled {
+    background-color: #c4828a6e !important; /* El color que desees para el estado inactivo */
+    border-color: #c5566398 !important;
+    color: #ffffff !important; /* Personaliza también el color del texto si es necesario */
+    opacity: 1 !important; /* Quita la opacidad por defecto de Bootstrap */
+}
+
+/* -------------------------------- */
+
+/* Cambiar color del botón btn-danger */
+.btn-danger {
+    background-color: #ef1833 !important;
+    border-color: #ef1833 !important;
+}
+
+/* Cambiar color cuando el cursor está encima del botón */
+.btn-danger:hover, .btn-danger:focus {
+    background-color: #d4162b !important;
+    border-color: #d4162b !important;
+}
+
+/* Cambiar color cuando se hace clic en el botón */
+.btn-danger:active, .btn-danger.active, .open > .dropdown-toggle.btn-danger {
+    background-color: #b31223 !important;
+    border-color: #b31223 !important;
+}
+
+/* Cambiar color cuando el botón está enfocado y activo */
+.btn-danger:focus:active, .btn-danger.active:focus {
+    background-color: #b31223 !important;
+    border-color: #b31223 !important;
+}
+
+.btn-danger:disabled,
+.btn-danger.disabled {
+    background-color: #c4828a6e !important; /* El color que desees para el estado inactivo */
+    border-color: #c5566398 !important;
+    color: #ffffff !important; /* Personaliza también el color del texto si es necesario */
+    opacity: 1 !important; /* Quita la opacidad por defecto de Bootstrap */
+}
+
+/* -------------------------------- */
+
+/* Cambiar color del botón btn-primary */
+.btn-primary {
+    background-color: #ef1833 !important;
+    border-color: #ef1833 !important;
+}
+
+/* Cambiar color cuando el cursor está encima del botón */
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #d4162b !important;
+    border-color: #d4162b !important;
+}
+
+/* Cambiar color cuando se hace clic en el botón */
+.btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    background-color: #b31223 !important;
+    border-color: #b31223 !important;
+}
+
+/* Cambiar color cuando el botón está enfocado y activo */
+.btn-primary:focus:active, .btn-primary.active:focus {
+    background-color: #b31223 !important;
+    border-color: #b31223 !important;
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+    background-color: #c4828a6e !important; /* El color que desees para el estado inactivo */
+    border-color: #c5566398 !important;
+    color: #ffffff !important; /* Personaliza también el color del texto si es necesario */
+    opacity: 1 !important; /* Quita la opacidad por defecto de Bootstrap */
+}
+
+/* -------------------------------- */
+
+/* Cambiar color del texto y borde del botón btn-outline-success */
+.btn-outline-success {
+    color: #ef1833;
+    border-color: #ef1833;
+}
+
+/* Cambiar color cuando el cursor está encima del botón */
+.btn-outline-success:hover, .btn-outline-success:focus {
+    color: #ffffff;
+    background-color: #ef1833;
+    border-color: #ef1833;
+}
+
+/* Cambiar color cuando se hace clic en el botón */
+.btn-outline-success:active, .btn-outline-success.active, .open > .dropdown-toggle.btn-outline-success {
+    color: #ffffff;
+    background-color: #d4162b;
+    border-color: #d4162b;
+}
+
+/* Cambiar color cuando el botón está enfocado y activo */
+.btn-outline-success:focus:active, .btn-outline-success.active:focus {
+    color: #ffffff;
+    background-color: #b31223;
+    border-color: #b31223;
+}
+
+/* -------------------------------- */
+
+/* Cambiar color del checkbox cuando está activado */
+.form-check-input:checked {
+    background-color: #ef1833;
+    border-color: #ef1833;
+}
+
+/* Cambiar color del indicador (check) dentro del checkbox */
+.form-check-input:checked::before {
+    background-color: #fff;
+    border-color: #ef1833;
+}
+
+.form-check-input:focus {
+    border-color: #ef1833;
+    box-shadow: 0 0 0 0.25rem rgba(239, 24, 51, 0.25);
+}
+
+/* -------------------------------- */
+
+/* Cambiar color del enlace activo en la navegación dentro del div con id "nav-tab" */
+#nav-tab .nav-link.active {
+    color: black;
+}
+
+/* Cambiar color del enlace cuando el cursor está encima dentro del div con id "nav-tab" */
+#nav-tab .nav-link:hover, #nav-tab .nav-link:focus {
+    /* color: #d4162b !important;*/
+    color: black;
+}
+
+/* Asegurarse de que el color vuelva a ser normal cuando el enlace pierde el foco */
+#nav-tab .nav-link:focus:not(.active), #nav-tab .nav-link:hover:not(.active) {
+    /* color: #d4162b !important;*/
+    color: black;
+}
+
+/* Cambiar color de fondo del enlace activo dentro del div con id "nav-tab" */
+#nav-tab .nav-link:not(.active) {
+    color: #ef1833 !important;
+    border-top: solid 1px lightgray;
+    border-left: solid 1px lightgray;
+    border-right: solid 1px lightgray;
+}
+
+/* -------------------------------- */
+
+.page-link {
+    color: #ef1833 !important;
+}
+
+.active>.page-link {
+    background-color: #ef1833 !important;
+    color: white !important;
+    border-color: #ef1833;
+}
+
+/* -------------------------------- */
+
+.bi-red {
+    color: #ef1833 !important;
+}
+
+.bg-success {
+    background-color: #ef1833 !important;
+}
+
+/* -------------------------------- */
+
+.fixed-table-toolbar {
+    margin-top: 12px;
+    margin-bottom: 2px;
+    border: 1px solid #ccc; /* Borde del div */
+    border-radius: 5px;     /* Bordes redondeados */
+    padding: 5px;
+}
+
+.label-text {
+    position: absolute;
+    top: -27px;             /* Ajusta la posición vertical */
+    left: 10px;             /* Ajusta la posición horizontal */
+    background-color: #fff; /* Fondo blanco para la etiqueta */
+    padding: 0 5px;         /* Espaciado interno */
+    font-weight: bold;      /* Texto en negrita */
+    color: #333;            /* Color del texto */
+    font-size: 14px;        /* Tamaño del texto */
+}
+
+.fixed-table-toolbar:empty {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* -------------------------------- */
+
+.upload-area {
+    width: 300px;
+    height: 200px;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+}
+
+.upload-area:hover {
+    background-color: #f0f0f0;
+}
+
+.upload-area img {
+    max-width: 100%;
+    max-height: 100%;
+    display: none;
+}
+
+#upload-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+
+/* -------------------------------- */
+
+/* Ítem de menú que el fondo sea rojo en lugar de azul */
+
+.dropdown-item:active, 
+.dropdown-item:focus {
+    background-color: #ef1833 !important;
+    color: white !important; /* Opcional, para mejor contraste */
+}
+
+/* -------------------------------- */

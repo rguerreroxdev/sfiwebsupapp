@@ -79,19 +79,20 @@ class PDF extends TCPDF
         // Encabezado de columnas
         $x = 15;
         $y = 40;
-        $this->SetFont("Helvetica", "", 6);
+        $this->SetFont("Helvetica", "", 5);
         $this->SetXY($x, $y);           $this->Cell(7, 5, '#', 1, 0, '', false);
         $this->SetXY($x +=  7, $y);     $this->Cell(25, 5, 'Store', 1, 0, '', false);
-        $this->SetXY($x += 25, $y);     $this->Cell(15, 5, 'Code', 1, 0, '', false);
-        $this->SetXY($x += 15, $y);     $this->Cell(28, 5, 'Category', 1, 0, '', false);
-        $this->SetXY($x += 28, $y);     $this->Cell(20, 5, 'Brand', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(25, 5, 'Model', 1, 0, '', false);
-        $this->SetXY($x += 25, $y);     $this->Cell(25, 5, 'Color', 1, 0, '', false);
-        $this->SetXY($x += 25, $y);     $this->Cell(50, 5, 'Description', 1, 0, '', false);
-        $this->SetXY($x += 50, $y);     $this->Cell(15, 5, 'MSRP', 1, 0, '', false);
-        $this->SetXY($x += 15, $y);     $this->Cell(20, 5, 'Stock type distr.', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(10, 5, 'Stock', 1, 0, '', false);
+        $this->SetXY($x += 25, $y);     $this->Cell(13, 5, 'Code', 1, 0, '', false);
+        $this->SetXY($x += 13, $y);     $this->Cell(25, 5, 'Category', 1, 0, '', false);
+        $this->SetXY($x += 25, $y);     $this->Cell(18, 5, 'Brand', 1, 0, '', false);
+        $this->SetXY($x += 18, $y);     $this->Cell(23, 5, 'Model', 1, 0, '', false);
+        $this->SetXY($x += 23, $y);     $this->Cell(23, 5, 'Color', 1, 0, '', false);
+        $this->SetXY($x += 23, $y);     $this->Cell(50, 5, 'Description', 1, 0, '', false);
+        $this->SetXY($x += 50, $y);     $this->Cell(13, 5, 'MSRP', 1, 0, '', false);
+        $this->SetXY($x += 13, $y);     $this->Cell(18, 5, 'Stock type distr.', 1, 0, '', false);
+        $this->SetXY($x += 18, $y);     $this->Cell(10, 5, 'Stock', 1, 0, '', false);
         $this->SetXY($x += 10, $y);     $this->Cell(10, 5, 'In transit', 1, 0, '', false);
+        $this->SetXY($x += 10, $y);     $this->Cell(15, 5, 'MSRP x STD', 1, 0, '', false);
         $this->Ln(5);   $this->SetX(15);
     }
 
@@ -123,9 +124,12 @@ $datos = $objReportes->inventarioGeneral($usuarioId, $sucursalId, $categoriaId);
 
 $arrayDatosLimpios = array();
 $filaConteo = 0;
+$totalMsrpXtipodestockdist = 0;
 foreach ($datos as $fila)
 {
     $filaConteo++;
+    $msrpXtypodestockdist = $fila["MSRP"] * $fila["PORCENTAJETIPODESTOCKDIST"] / 100;
+    $totalMsrpXtipodestockdist += $msrpXtypodestockdist;
 
     $arrayFila = [
         $filaConteo,
@@ -139,15 +143,16 @@ foreach ($datos as $fila)
         "$ " . $fila["MSRP"],
         $fila["TIPODESTOCKDIST"],
         $fila["EXISTENCIA"],
-        $fila["ENTRANSITO"]
+        $fila["ENTRANSITO"],
+        "$ " . number_format($msrpXtypodestockdist, 2, ".", ",")
     ];
 
     array_push($arrayDatosLimpios, $arrayFila);
 }
 
 // Ancho de columnas (Ver los anchos en Header)
-$anchoDeColumnas = [7, 25, 15, 28, 20, 25, 25, 50, 15, 20, 10, 10];
-$alineacionDeCelda = ["L", "L", "L", "L", "L", "L", "L", "L", "R", "L", "R", "R"];
+$anchoDeColumnas = [7, 25, 13, 25, 18, 23, 23, 50, 13, 18, 10, 10, 15];
+$alineacionDeCelda = ["L", "L", "L", "L", "L", "L", "L", "L", "R", "L", "R", "R", "R"];
 
 // Preparar valores para controlar posición de fila y columna en que se muestran datos
 $startX = 15;
@@ -163,7 +168,7 @@ foreach ($arrayDatosLimpios as $fila)
     // En cada conjunto de datos, se recorren las columnas que se van a mostrar
     for ($i = 0; $i < count($fila); $i++)
     {
-        $pdf->SetFont("Helvetica", "", 6);
+        $pdf->SetFont("Helvetica", "", 5);
         $pdf->MultiCell($anchoDeColumnas[$i], 5, $fila[$i], 0, $alineacionDeCelda[$i], '', true);
 
         $siguienteY = $pdf->GetY();
@@ -219,6 +224,9 @@ if ($pdf->GetY() + 30 > $pdf->getPageHeight()) {
 
 $pdf->setXY($startX, $currentY - 20);
 $pdf->Cell(70, 5, "Total items: " . count($arrayDatosLimpios));
+$pdf->setXY($startX + 215, $currentY - 20);
+$pdf->Cell(35, 5, "Total: $ " . number_format($totalMsrpXtipodestockdist, 2, ".", ","), 0, 0, "R");
+
 
 //-----------------------------------------------
 

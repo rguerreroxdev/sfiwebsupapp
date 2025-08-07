@@ -128,7 +128,7 @@ foreach ($datos as $fila)
         $fila["MODELO"],
         $fila["DESCRIPCION"],
         "$ " . $fila["MSRP"],
-        $fila["PORCENTAJETIPODESTOCKDIST"] . "%"
+        $fila["TIPODESTOCKDIST"] . " - " . $fila["PORCENTAJETIPODESTOCKDIST"] . "%"
     ];
 
     array_push($arrayDatosLimpios, $arrayFila);

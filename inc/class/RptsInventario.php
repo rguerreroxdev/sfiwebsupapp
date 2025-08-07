@@ -769,6 +769,7 @@ class RptsInventario
                 CONVERT(VARCHAR, T.FECHACREACION, 101) AS FECHACREACIONVARCHAR,
                 SD.NOMBRE AS DESTINO,
                 C.NOMBRE AS CATEGORIA,
+                P.MODELO AS MODELO,
                 I.MSRP,
                 TSO.NOMBRECORTO AS TIPODESTOCKORIGEN,
                 TSD.NOMBRECORTO AS TIPODESTOCKDISTR,
@@ -797,6 +798,7 @@ class RptsInventario
                 T.FECHACREACION,
                 SD.NOMBRE,
                 C.NOMBRE,
+                P.MODELO,
                 I.MSRP,
                 TSO.NOMBRECORTO,
                 TSD.NOMBRECORTO

@@ -91,17 +91,18 @@ class PDF extends TCPDF
         // Encabezado de columnas
         $x = 15;
         $y = 45;
-        $this->SetFont("Helvetica", "", 6);
-        $this->SetXY($x, $y);           $this->Cell(8, 5, '#', 1, 0, '', false);
-        $this->SetXY($x +=  8, $y);     $this->Cell(18, 5, 'Translate date', 1, 0, '', false);
-        $this->SetXY($x += 18, $y);     $this->Cell(25, 5, 'Store', 1, 0, '', false);
-        $this->SetXY($x += 25, $y);     $this->Cell(30, 5, 'Category', 1, 0, '', false);
-        $this->SetXY($x += 30, $y);     $this->Cell(10, 5, 'Quantity', 1, 0, '', false);
-        $this->SetXY($x += 10, $y);     $this->Cell(18, 5, 'MSRP', 1, 0, '', false);
-        $this->SetXY($x += 18, $y);     $this->Cell(20, 5, 'Stock type origin', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(20, 5, 'Total cost origin', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(20, 5, 'Stock type distr.', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(20, 5, 'Total cost distr.', 1, 0, '', false);
+        $this->SetFont("Helvetica", "", 5);
+        $this->SetXY($x, $y);           $this->Cell(6, 5, '#', 1, 0, '', false);
+        $this->SetXY($x +=  6, $y);     $this->Cell(15, 5, 'Translate date', 1, 0, '', false);
+        $this->SetXY($x += 15, $y);     $this->Cell(20, 5, 'Store', 1, 0, '', false);
+        $this->SetXY($x += 20, $y);     $this->Cell(28, 5, 'Category', 1, 0, '', false);
+        $this->SetXY($x += 28, $y);     $this->Cell(28, 5, 'Model', 1, 0, '', false);
+        $this->SetXY($x += 28, $y);     $this->Cell(8, 5, 'Quantity', 1, 0, '', false);
+        $this->SetXY($x +=  8, $y);     $this->Cell(15, 5, 'MSRP', 1, 0, '', false);
+        $this->SetXY($x += 15, $y);     $this->Cell(18, 5, 'Stock type origin', 1, 0, '', false);
+        $this->SetXY($x += 18, $y);     $this->Cell(18, 5, 'Total cost origin', 1, 0, '', false);
+        $this->SetXY($x += 18, $y);     $this->Cell(18, 5, 'Stock type distr.', 1, 0, '', false);
+        $this->SetXY($x += 18, $y);     $this->Cell(18, 5, 'Total cost distr.', 1, 0, '', false);
         $this->Ln(5);   $this->SetX(15);
     }
 
@@ -145,6 +146,7 @@ foreach ($datos as $fila)
         $fila["FECHACREACIONVARCHAR"],
         $fila["DESTINO"],
         $fila["CATEGORIA"],
+        $fila["MODELO"],
         $fila["CANTIDAD"],
         "$ " . number_format($fila["MSRP"], 2),
         $fila["TIPODESTOCKORIGEN"],
@@ -161,8 +163,8 @@ foreach ($datos as $fila)
 }
 
 // Ancho de columnas (Ver los anchos en Header)
-$anchoDeColumnas = [8, 18, 25, 30, 10, 18, 20, 20, 20, 20];
-$alineacionDeCelda = ["L", "L", "L", "L", "R", "R", "L", "R", "L", "R"];
+$anchoDeColumnas = [6, 15, 20, 28, 28, 8, 15, 18, 18, 18, 18];
+$alineacionDeCelda = ["L", "L", "L", "L", "L", "R", "R", "L", "R", "L", "R"];
 
 // Preparar valores para controlar posición de fila y columna en que se muestran datos
 $startX = 15;
@@ -178,7 +180,7 @@ foreach ($arrayDatosLimpios as $fila)
     // En cada conjunto de datos, se recorren las columnas que se van a mostrar
     for ($i = 0; $i < count($fila); $i++)
     {
-        $pdf->SetFont("Helvetica", "", 6);
+        $pdf->SetFont("Helvetica", "", 5);
         $pdf->MultiCell($anchoDeColumnas[$i], 5, $fila[$i], 0, $alineacionDeCelda[$i], '', true);
 
         $siguienteY = $pdf->GetY();
@@ -232,12 +234,12 @@ if ($pdf->GetY() + 30 > $pdf->getPageHeight()) {
     $pdf->setXY($currentX, $currentY);
 }
 
-$pdf->setXY($startX + 40, $currentY - 20);
-$pdf->Cell(51, 5, "Total quantity: " . $cantidadTotal, 0, 0, "R");
-$pdf->setXY($startX + 99, $currentY - 20);
-$pdf->Cell(50, 5, "Grand total origin: $ " . number_format($granTotalCostoOrigen, 2), 0, 0, "R");
-$pdf->setXY($startX + 139, $currentY - 20);
-$pdf->Cell(50, 5, "Grand total distr.: $ " . number_format($granTotalCostoDistr, 2), 0, 0, "R");
+$pdf->setXY($startX + 69, $currentY - 20);
+$pdf->Cell(36, 5, "Total quantity: " . $cantidadTotal, 0, 0, "R");
+$pdf->setXY($startX + 120, $currentY - 20);
+$pdf->Cell(36, 5, "Grand total origin: $ " . number_format($granTotalCostoOrigen, 2), 0, 0, "R");
+$pdf->setXY($startX + 156, $currentY - 20);
+$pdf->Cell(36, 5, "Grand total distr.: $ " . number_format($granTotalCostoDistr, 2), 0, 0, "R");
 
 //-----------------------------------------------
 

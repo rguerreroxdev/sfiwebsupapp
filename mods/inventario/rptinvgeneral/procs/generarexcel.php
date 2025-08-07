@@ -67,25 +67,36 @@ array_push($data, [""]);
 array_push($data, [
     "<b>#</b>", "<b>Store</b>", "<b>Code</b>", "<b>Category</b>", "<b>Brand</b>",
     "<b>Model</b>", "<b>Color</b>", "<b>Description</b>",
-    "<b>MSRP $</b>", "<b>Stock type distr.</b>", "<b>Stock</b>", "<b>In transit</b>"
+    "<b>MSRP $</b>", "<b>Stock type distr.</b>", "<b>Stock</b>", "<b>In transit</b>",
+    "<b>MSRP x Stock type distr.</b>"
 ]);
 
 // Agregando las filas de datos
 $conteo = 0;
+$totalMsrpXtipodestockdist = 0;
 foreach($datos as $dato)
 {
     $conteo++;
+    $msrpXtypodestockdist = $dato["MSRP"] * $dato["PORCENTAJETIPODESTOCKDIST"] / 100;
+    $totalMsrpXtipodestockdist += $msrpXtypodestockdist;
     array_push($data, [
         $conteo,
         $dato["SUCURSAL"], $dato["CODIGOINVENTARIO"], $dato["CATEGORIA"], $dato["MARCA"],
         $dato["MODELO"], $dato["COLOR"], $dato["DESCRIPCION"],
-        $dato["MSRP"], $dato["TIPODESTOCKDIST"], $dato["EXISTENCIA"], $dato["ENTRANSITO"]
+        $dato["MSRP"], $dato["TIPODESTOCKDIST"], $dato["EXISTENCIA"], $dato["ENTRANSITO"],
+        number_format($msrpXtypodestockdist, 2, ".", "")
     ]);
 }
 
 // Mostrar total de ítems
 array_push($data, [""]);
-array_push($data, ["Total items:", $conteo]);
+array_push($data, [
+    "Total items:",
+    $conteo,
+    "", "", "", "", "", "", "", "", "",
+    "Total",
+    number_format($totalMsrpXtipodestockdist, 2, ".", "")
+]);
 
 // Crear el archivo de Excel
 $xlsx = SimpleXLSXGen::fromArray($data);

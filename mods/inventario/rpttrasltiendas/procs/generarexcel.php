@@ -74,7 +74,7 @@ array_push($data, [""]);
 
 // Encabezado de filas de datos
 array_push($data, [
-    "<b>#</b>", "<b>Translate date</b>", "<b>Store</b>", "<b>Category</b>", "<b>Quantity</b>", "<b>MSRP ($)</b>", "<b>Stock type origin</b>", "<b>Total cost origin</b>", "<b>Stock type distr.</b>", "<b>Total cost distr.</b>"
+    "<b>#</b>", "<b>Translate date</b>", "<b>Store</b>", "<b>Category</b>", "<b>Model</b>", "<b>Quantity</b>", "<b>MSRP ($)</b>", "<b>Stock type origin</b>", "<b>Total cost origin</b>", "<b>Stock type distr.</b>", "<b>Total cost distr.</b>"
 ]);
 
 // Agregando las filas de datos
@@ -88,7 +88,7 @@ foreach($datos as $dato)
 
     array_push($data, [
         $conteo,
-        str_replace("/", "-", $dato["FECHACREACIONVARCHAR"]), $dato["DESTINO"], $dato["CATEGORIA"], $dato["CANTIDAD"], $dato["MSRP"], $dato["TIPODESTOCKORIGEN"], $dato["TOTALCOSTOORIGEN"], $dato["TIPODESTOCKDISTR"], $dato["TOTALCOSTODISTR"]
+        str_replace("/", "-", $dato["FECHACREACIONVARCHAR"]), $dato["DESTINO"], $dato["CATEGORIA"], $dato["MODELO"], $dato["CANTIDAD"], $dato["MSRP"], $dato["TIPODESTOCKORIGEN"], $dato["TOTALCOSTOORIGEN"], $dato["TIPODESTOCKDISTR"], $dato["TOTALCOSTODISTR"]
     ]);
 
     $cantidadTotal += $dato["CANTIDAD"];
@@ -99,7 +99,7 @@ foreach($datos as $dato)
 // Mostrar total
 array_push($data, [""]);
 array_push($data, [
-    "", "", "",
+    "", "", "", "",
     "Total quantity:", $cantidadTotal,
     "",
     "Grand total origin:", number_format($granTotalCostoOrigen, 2, ".", ""),

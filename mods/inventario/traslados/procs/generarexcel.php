@@ -54,14 +54,14 @@ array_push($data, ["To:", $objTraslado->sucursalDestino]);
 array_push($data, [""]);
 
 // Encabezado de detalle
-array_push($data, ["<b>#</b>", "<b>Inventory item</b>", "<b>Category</b>", "<b>Brand</b>", "<b>Model</b>", "<b>Description</b>", "<b>MSRP $</b>", "<b>Stock type distr.</b>"]);
+array_push($data, ["<b>#</b>", "<b>Inventory item</b>", "<b>Category</b>", "<b>Brand</b>", "<b>Model</b>", "<b>Description</b>", "<b>MSRP $</b>", "<b>Stock type distr.</b>", "<b>Stock type distr. value</b>"]);
 
 // Agregando las filas del traslado
 $conteo = 0;
 foreach($listaDeDetalles as $detalle)
 {
     $conteo++;
-    array_push($data, [$conteo, $detalle["CODIGOINVENTARIO"], $detalle["CATEGORIA"], $detalle["MARCA"], $detalle["MODELO"], $detalle["DESCRIPCION"], $detalle["MSRP"], $detalle["PORCENTAJETIPODESTOCKDIST"]]);
+    array_push($data, [$conteo, $detalle["CODIGOINVENTARIO"], $detalle["CATEGORIA"], $detalle["MARCA"], $detalle["MODELO"], $detalle["DESCRIPCION"], $detalle["MSRP"], $detalle["TIPODESTOCKDIST"], $detalle["PORCENTAJETIPODESTOCKDIST"]]);
 }
 
 // Mostrar total de ítems

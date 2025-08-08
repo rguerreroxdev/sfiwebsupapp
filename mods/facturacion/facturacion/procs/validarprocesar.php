@@ -21,8 +21,6 @@ $resultado["mensaje"] = "";
 
 $sucursalId = $_POST["sid"];
 
-$sucursalId = 4;
-
 //-----------------------------------------------
 
 $objConfiguracion = new FacConfiguracionesPorSucursal($conn);

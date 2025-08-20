@@ -248,4 +248,27 @@ class RptsFacturacion
     }
 
     //-------------------------------------------
+
+    /**
+     * Ventas por proveedor (detalle)
+     * 
+     * @param string $fechaInicial Fecha de inicio de emisión de facturas (formato yyyymmdd)
+     * @param string $fechaFinal Fecha final de emisión de facturas (formato yyyymmdd)
+     * @param int $sucursalId Sucursal a ser filtrada (-1 para todas las sucursales que tiene acceso el usuario)
+     * @param int $proveedorId Proveedor a ser filtardo (-1 para todos los proveedores)
+     * 
+     * @return array Todos los registros encontrados
+     * 
+     */
+    public function ventasPorProveedorDetalle(string $fechaInicial, string $fechaFinal, int $sucursalId, int $proveedorId): array
+    {
+        $sentenciaSql = "
+            EXECUTE SPFACREPVENTASPORPROVEEDORDETALLE ?, ?, ?, ?
+        ";
+        $datos = $this->conn->execute($sentenciaSql, [$fechaInicial, $fechaFinal, $sucursalId, $proveedorId]);
+
+        return $datos;
+    }
+
+    //-------------------------------------------
 }

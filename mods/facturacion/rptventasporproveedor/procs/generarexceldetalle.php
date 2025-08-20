@@ -7,6 +7,7 @@ require_once("../../../../inc/includes.inc.php");
 require_once("../../../../inc/class/Empresa.php");
 require_once("../../../../inc/class/RptsFacturacion.php");
 require_once("../../../../inc/class/Usuario.php");
+require_once("../../../../inc/class/Proveedores.php");
 require_once("../../../../inc/class/Sucursales.php");
 
 //-----------------------------------------------
@@ -18,6 +19,7 @@ $conn->conectar();
 
 $usuarioId = isset($_GET["u"]) && trim($_GET["u"]) != "" ? $_GET["u"] : -1;
 $sucursalId = isset($_GET["s"]) && trim($_GET["s"]) != "" ? $_GET["s"] : -1;
+$proveedorId = isset($_GET["p"]) && trim($_GET["p"]) != "" ? $_GET["p"] : -1;
 $fechaInicial = isset($_GET["fi"]) && trim($_GET["fi"]) != "" ? $_GET["fi"] : '25000101';
 $fechaFinal = isset($_GET["ff"]) && trim($_GET["ff"]) != "" ? $_GET["ff"] : '25000101';
 
@@ -42,7 +44,7 @@ use Shuchkin\SimpleXLSXGen;
 
 // Obtener datos
 $objReportes = new RptsFacturacion($conn);
-$datos = $objReportes->ventasCompletas($fechaInicial, $fechaFinal, $sucursalId);
+$datos = $objReportes->ventasPorProveedorDetalle($fechaInicial, $fechaFinal, $sucursalId, $proveedorId);
 
 // Crear el arreglo de datos que se mostrará en Excel
 $data = array();
@@ -53,24 +55,29 @@ $objEmpresa = new Empresa($conn);
 $objEmpresa->getDatos();
 $objSucursal = new Sucursales($conn);
 $objSucursal->getById($sucursalId);
+$objProveedor = new Proveedores($conn);
+$objProveedor->getById($proveedorId);
 $empresa = $objEmpresa->nombre;
 $sucursal = $sucursalId == -1 ? "All" : $objSucursal->nombre;
+$proveedor = $proveedorId == -1 ? "All suppliers" : $objProveedor->nombre; 
 
 $fechaInicial = substr($fechaInicial, 4, 2) . "-" . substr($fechaInicial, 6, 2) . "-" . substr($fechaInicial, 0, 4);
 $fechaFinal = substr($fechaFinal, 4, 2) . "-" . substr($fechaFinal, 6, 2) . "-" . substr($fechaFinal, 0, 4);
 
-array_push($data, ["<b>Complete sales</b>"]);
+array_push($data, ["<b>Sales by supplier</b>"]);
 array_push($data, ["<b>" . $empresa . "</b>"]);
 array_push($data, ["Date:", $fechaDeEmision->format("m-d-Y")]);
 array_push($data, ["Store:", $sucursal]);
+array_push($data, ["Supplier:", $proveedor]);
 array_push($data, ["From :", $fechaInicial]);
 array_push($data, ["To :", $fechaFinal]);
 array_push($data, [""]);
 
 // Encabezado de filas de datos
 array_push($data, [
-    "<b>#</b>", "<b>Date</b>", "<b>Invoice #</b>", "<b>Customer name</b>", "<b>Product</b>", "<b>Inventory number</b>", "<b>Price</b>", "<b>Platform</b>",
-    "<b>Referral person</b>", "<b>Salesperson</b>", "<b>Form of payment</b>", "<b>Financial entity</b>", "<b>Delivery or self pickup</b>"
+    "<b>#</b>", "<b>Supplier</b>", "<b>Date</b>", "<b>Invoice #</b>", "<b>Customer name</b>",
+    "<b>Inventory number</b>", "<b>Product</b>", "<b>Price</b>", "<b>MSRP</b>", "<b>Stock type distr.</b>",
+    "<b>Total cost distr.</b>"
 ]);
 
 // Agregando las filas de datos
@@ -83,8 +90,10 @@ foreach($datos as $dato)
 
     array_push($data, [
         $conteo,
-        str_replace("/", "-", $dato["FECHA"]), $dato["CORRELATIVO"], $dato["CLIENTENOMBRE"], $dato["PRODUCTO"], $dato["CODIGOINVENTARIO"], $dato["PRECIO"], $dato["PLATAFORMA"],
-        $dato["PERSONADEREFERENCIA"], $dato["VENDEDOR"], $dato["FORMASDEPAGO"], $dato["FINANCIERAS"], $dato["FORMADERETIRO"]
+        $dato["PROVEEDOR"],
+        str_replace("/", "-", $dato["FECHA"]), $dato["CORRELATIVO"], $dato["CLIENTENOMBRE"],
+        $dato["CODIGOPRODUCTO"], $dato["PRODUCTO"], $dato["PRECIO"], $dato["MSRP"], $dato["TIPODESTOCKDIST"],
+        $dato["COSTODIST"]
     ]);
 }
 
@@ -92,7 +101,7 @@ foreach($datos as $dato)
 array_push($data, [""]);
 array_push($data, [
     "Total items:", $conteo,
-    "", "", "",
+    "", "", "", "",
     "Total:", number_format($totalPrecios, 2, ".", "")
 ]);
 
@@ -100,4 +109,4 @@ array_push($data, [
 $xlsx = SimpleXLSXGen::fromArray($data);
 
 // Enviar el archivo al navegador para descarga
-$xlsx->downloadAs('Complete sales.xlsx');
+$xlsx->downloadAs('Sales by supplier.xlsx');

@@ -69,7 +69,7 @@ class PDF extends TCPDF
 		$this->SetFont("Helvetica", "", 8);
 		$this->SetXY(15, 15);	$this->Cell(0, 5, $objEmpresa->nombre, 0, 0, "C");
         $this->SetFont("Helvetica", "B", 8);
-        $this->SetXY(15, 20);	$this->Cell(0, 5, "PROFITS", 0, 0, "C");
+        $this->SetXY(15, 20);	$this->Cell(0, 5, "PROFITS ORIGIN", 0, 0, "C");
 
         // Fecha y hora de generación
         $fechaDeEmision = new DateTime();
@@ -315,6 +315,6 @@ $pdf->setXY(142, $currentY - 10); $pdf->Cell(40, 5, "$ " . number_format($totalG
 //-----------------------------------------------
 
 // Generar el PDF y enviarlo al navegador
-$pdf->Output("Profits.pdf");
+$pdf->Output("Profits origin.pdf");
 
 //-----------------------------------------------

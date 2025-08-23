@@ -59,7 +59,7 @@ $sucursal = $sucursalId == -1 ? "All" : $objSucursal->nombre;
 $fechaInicial = substr($fechaInicial, 4, 2) . "-" . substr($fechaInicial, 6, 2) . "-" . substr($fechaInicial, 0, 4);
 $fechaFinal = substr($fechaFinal, 4, 2) . "-" . substr($fechaFinal, 6, 2) . "-" . substr($fechaFinal, 0, 4);
 
-array_push($data, ["<b>Profits</b>"]);
+array_push($data, ["<b>Profits origin</b>"]);
 array_push($data, ["<b>" . $empresa . "</b>"]);
 array_push($data, ["Date:", $fechaDeEmision->format("m-d-Y")]);
 array_push($data, ["Store:", $sucursal]);
@@ -115,4 +115,4 @@ array_push($data, [
 $xlsx = SimpleXLSXGen::fromArray($data);
 
 // Enviar el archivo al navegador para descarga
-$xlsx->downloadAs('Profits.xlsx');
+$xlsx->downloadAs('Profits origin.xlsx');

@@ -69,7 +69,7 @@ class PDF extends TCPDF
 		$this->SetFont("Helvetica", "", 8);
 		$this->SetXY(15, 15);	$this->Cell(0, 5, $objEmpresa->nombre, 0, 0, "C");
         $this->SetFont("Helvetica", "B", 8);
-        $this->SetXY(15, 20);	$this->Cell(0, 5, "PROFITS ORIGIN", 0, 0, "C");
+        $this->SetXY(15, 20);	$this->Cell(0, 5, "PROFITS", 0, 0, "C");
 
         // Fecha y hora de generación
         $fechaDeEmision = new DateTime();
@@ -120,7 +120,7 @@ $pdf->SetFont("Helvetica", "", 8);
 
 // Obtener datos
 $objReportes = new RptsFacturacion($conn);
-$datos = $objReportes->gananciasSobreVentasDetalle($fechaInicial, $fechaFinal, $sucursalId);
+$datos = $objReportes->gananciasSobreVentasDetallePrecioDistr($fechaInicial, $fechaFinal, $sucursalId);
 
 $arrayDatosLimpios = array();
 $filaConteo = 0;
@@ -141,7 +141,7 @@ foreach ($datos as $fila)
     }
 
     $totalVentas += $fila["PRECIODEVENTA"];
-    $totalCostos += $fila["COSTOORIGEN"];
+    $totalCostos += $fila["COSTODIST"];
     $totalGanancias += $fila["GANANCIA"];
 
     $arrayFila = [
@@ -151,7 +151,7 @@ foreach ($datos as $fila)
         $fila["CODIGOINVENTARIO"],
         $fila["PRODUCTO"],
         "$ " . number_format($fila["PRECIODEVENTA"], 2, ".", ","),
-        "$ " . number_format($fila["COSTOORIGEN"], 2, ".", ","),
+        "$ " . number_format($fila["COSTODIST"], 2, ".", ","),
         "$ " . number_format($fila["GANANCIA"], 2, ".", ","),
     ];
 
@@ -224,13 +224,13 @@ foreach ($arrayDatosLimpios as $fila)
         }
 
         $totalVentasTipoDeProducto = $datos[$conteoFilasTotales]["PRECIODEVENTA"];
-        $totalCostosTipoDeProducto = $datos[$conteoFilasTotales]["COSTOORIGEN"];
+        $totalCostosTipoDeProducto = $datos[$conteoFilasTotales]["COSTODIST"];
         $totalGananciasTipoDeProducto = $datos[$conteoFilasTotales]["GANANCIA"];
     }
     else
     {
         $totalVentasTipoDeProducto += $datos[$conteoFilasTotales]["PRECIODEVENTA"];
-        $totalCostosTipoDeProducto += $datos[$conteoFilasTotales]["COSTOORIGEN"];
+        $totalCostosTipoDeProducto += $datos[$conteoFilasTotales]["COSTODIST"];
         $totalGananciasTipoDeProducto += $datos[$conteoFilasTotales]["GANANCIA"];
     }
 
@@ -321,6 +321,6 @@ $pdf->setXY(162, $currentY - 10); $pdf->Cell(20, 5, "$ " . number_format($totalG
 //-----------------------------------------------
 
 // Generar el PDF y enviarlo al navegador
-$pdf->Output("Profits origin.pdf");
+$pdf->Output("Profits.pdf");
 
 //-----------------------------------------------

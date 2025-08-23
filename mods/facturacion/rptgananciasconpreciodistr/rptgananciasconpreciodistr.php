@@ -30,7 +30,7 @@
         }
 ?>
 
-<h3>Report: Profits origin</h3>
+<h3>Report: Profits</h3>
 
 <div class="p-3 bg-body rounded shadow-sm">
     <div class="row">

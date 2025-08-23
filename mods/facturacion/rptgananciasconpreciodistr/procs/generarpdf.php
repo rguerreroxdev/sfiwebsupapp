@@ -69,7 +69,7 @@ class PDF extends TCPDF
 		$this->SetFont("Helvetica", "", 8);
 		$this->SetXY(15, 15);	$this->Cell(0, 5, $objEmpresa->nombre, 0, 0, "C");
         $this->SetFont("Helvetica", "B", 8);
-        $this->SetXY(15, 20);	$this->Cell(0, 5, "PROFITS ORIGIN", 0, 0, "C");
+        $this->SetXY(15, 20);	$this->Cell(0, 5, "PROFITS", 0, 0, "C");
 
         // Fecha y hora de generación
         $fechaDeEmision = new DateTime();
@@ -86,13 +86,10 @@ class PDF extends TCPDF
         $y = 45;
         $this->SetFont("Helvetica", "", 6);
         $this->SetXY($x, $y);           $this->Cell(7, 5, '#', 1, 0, '', false);
-        $this->SetXY($x +=  7, $y);     $this->Cell(20, 5, 'Date', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(20, 5, 'Invoice #', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(20, 5, 'Product code', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(40, 5, 'Product', 1, 0, '', false);
-        $this->SetXY($x += 40, $y);     $this->Cell(20, 5, 'Sale price', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(20, 5, 'Product cost', 1, 0, '', false);
-        $this->SetXY($x += 20, $y);     $this->Cell(20, 5, 'Profit', 1, 0, '', false);
+        $this->SetXY($x +=  7, $y);     $this->Cell(40, 5, 'Date', 1, 0, '', false);
+        $this->SetXY($x += 40, $y);     $this->Cell(40, 5, 'Sum of product sales', 1, 0, '', false);
+        $this->SetXY($x += 40, $y);     $this->Cell(40, 5, 'Sum of product costs', 1, 0, '', false);
+        $this->SetXY($x += 40, $y);     $this->Cell(40, 5, 'Profits', 1, 0, '', false);
         $this->Ln(5);   $this->SetX(15);
     }
 
@@ -120,7 +117,7 @@ $pdf->SetFont("Helvetica", "", 8);
 
 // Obtener datos
 $objReportes = new RptsFacturacion($conn);
-$datos = $objReportes->gananciasSobreVentasDetalle($fechaInicial, $fechaFinal, $sucursalId);
+$datos = $objReportes->gananciasSobreVentasPrecioDistr($fechaInicial, $fechaFinal, $sucursalId);
 
 $arrayDatosLimpios = array();
 $filaConteo = 0;
@@ -140,18 +137,15 @@ foreach ($datos as $fila)
         $filaConteo++;    
     }
 
-    $totalVentas += $fila["PRECIODEVENTA"];
-    $totalCostos += $fila["COSTOORIGEN"];
+    $totalVentas += $fila["SUMADEVENTA"];
+    $totalCostos += $fila["SUMADECOSTO"];
     $totalGanancias += $fila["GANANCIA"];
 
     $arrayFila = [
         $filaConteo,
         $fila["FECHA"],
-        $fila["CORRELATIVO"],
-        $fila["CODIGOINVENTARIO"],
-        $fila["PRODUCTO"],
-        "$ " . number_format($fila["PRECIODEVENTA"], 2, ".", ","),
-        "$ " . number_format($fila["COSTOORIGEN"], 2, ".", ","),
+        "$ " . number_format($fila["SUMADEVENTA"], 2, ".", ","),
+        "$ " . number_format($fila["SUMADECOSTO"], 2, ".", ","),
         "$ " . number_format($fila["GANANCIA"], 2, ".", ","),
     ];
 
@@ -159,8 +153,8 @@ foreach ($datos as $fila)
 }
 
 // Ancho de columnas (Ver los anchos en Header)
-$anchoDeColumnas = [7, 20, 20, 20, 40, 20, 20, 20];
-$alineacionDeCelda = ["L", "L", "L", "L", "L", "R", "R", "R"];
+$anchoDeColumnas = [7, 40, 40, 40, 40];
+$alineacionDeCelda = ["L", "L", "R", "R", "R"];
 
 // Preparar valores para controlar posición de fila y columna en que se muestran datos
 $startX = 15;
@@ -187,10 +181,10 @@ foreach ($arrayDatosLimpios as $fila)
         {
             $pdf->setXY($startX, $currentY);
 
-            $pdf->setXY(82, $currentY); $pdf->Cell(40, 5, "Total $tipoDeProducto: ", 0, 0, "R");
-            $pdf->setXY(122, $currentY); $pdf->Cell(20, 5, "$ " . number_format($totalVentasTipoDeProducto, 2, ".", ","), 1, 0, "R");
-            $pdf->setXY(142, $currentY); $pdf->Cell(20, 5, "$ " . number_format($totalCostosTipoDeProducto, 2, ".", ","), 1, 0, "R");
-            $pdf->setXY(162, $currentY); $pdf->Cell(20, 5, "$ " . number_format($totalGananciasTipoDeProducto, 2, ".", ","), 1, 0, "R");
+            $pdf->setXY(22, $currentY); $pdf->Cell(40, 5, "Total $tipoDeProducto: ", 0, 0, "R");
+            $pdf->setXY(62, $currentY); $pdf->Cell(40, 5, "$ " . number_format($totalVentasTipoDeProducto, 2, ".", ","), 1, 0, "R");
+            $pdf->setXY(102, $currentY); $pdf->Cell(40, 5, "$ " . number_format($totalCostosTipoDeProducto, 2, ".", ","), 1, 0, "R");
+            $pdf->setXY(142, $currentY); $pdf->Cell(40, 5, "$ " . number_format($totalGananciasTipoDeProducto, 2, ".", ","), 1, 0, "R");
 
             $currentX = $startX;
             $currentY += 5;
@@ -223,14 +217,14 @@ foreach ($arrayDatosLimpios as $fila)
             $pdf->setXY($currentX, $currentY);
         }
 
-        $totalVentasTipoDeProducto = $datos[$conteoFilasTotales]["PRECIODEVENTA"];
-        $totalCostosTipoDeProducto = $datos[$conteoFilasTotales]["COSTOORIGEN"];
+        $totalVentasTipoDeProducto = $datos[$conteoFilasTotales]["SUMADEVENTA"];
+        $totalCostosTipoDeProducto = $datos[$conteoFilasTotales]["SUMADECOSTO"];
         $totalGananciasTipoDeProducto = $datos[$conteoFilasTotales]["GANANCIA"];
     }
     else
     {
-        $totalVentasTipoDeProducto += $datos[$conteoFilasTotales]["PRECIODEVENTA"];
-        $totalCostosTipoDeProducto += $datos[$conteoFilasTotales]["COSTOORIGEN"];
+        $totalVentasTipoDeProducto += $datos[$conteoFilasTotales]["SUMADEVENTA"];
+        $totalCostosTipoDeProducto += $datos[$conteoFilasTotales]["SUMADECOSTO"];
         $totalGananciasTipoDeProducto += $datos[$conteoFilasTotales]["GANANCIA"];
     }
 
@@ -294,10 +288,10 @@ if ($pdf->GetY() + 30 > $pdf->getPageHeight()) {
 }
 
 $pdf->setXY($startX, $currentY - 20);
-$pdf->setXY(82, $currentY - 20); $pdf->Cell(40, 5, "Total $tipoDeProducto: ", 0, 0, "R");
-$pdf->setXY(122, $currentY - 20); $pdf->Cell(20, 5, "$ " . number_format($totalVentasTipoDeProducto, 2, ".", ","), 1, 0, "R");
-$pdf->setXY(142, $currentY - 20); $pdf->Cell(20, 5, "$ " . number_format($totalCostosTipoDeProducto, 2, ".", ","), 1, 0, "R");
-$pdf->setXY(162, $currentY - 20); $pdf->Cell(20, 5, "$ " . number_format($totalGananciasTipoDeProducto, 2, ".", ","), 1, 0, "R");
+$pdf->setXY(22, $currentY - 20); $pdf->Cell(40, 5, "Total $tipoDeProducto: ", 0, 0, "R");
+$pdf->setXY(62, $currentY - 20); $pdf->Cell(40, 5, "$ " . number_format($totalVentasTipoDeProducto, 2, ".", ","), 1, 0, "R");
+$pdf->setXY(102, $currentY - 20); $pdf->Cell(40, 5, "$ " . number_format($totalCostosTipoDeProducto, 2, ".", ","), 1, 0, "R");
+$pdf->setXY(142, $currentY - 20); $pdf->Cell(40, 5, "$ " . number_format($totalGananciasTipoDeProducto, 2, ".", ","), 1, 0, "R");
 
 //-----------------------------------------------
 
@@ -313,14 +307,14 @@ if ($pdf->GetY() + 30 > $pdf->getPageHeight()) {
     $pdf->setXY($currentX, $currentY);
 }
 
-$pdf->setXY(82, $currentY - 10); $pdf->Cell(40, 5, "Overall total: ", 0, 0, "R");
-$pdf->setXY(122, $currentY - 10); $pdf->Cell(20, 5, "$ " . number_format($totalVentas, 2, ".", ","), 1, 0, "R");
-$pdf->setXY(142, $currentY - 10); $pdf->Cell(20, 5, "$ " . number_format($totalCostos, 2, ".", ","), 1, 0, "R");
-$pdf->setXY(162, $currentY - 10); $pdf->Cell(20, 5, "$ " . number_format($totalGanancias, 2, ".", ","), 1, 0, "R");
+$pdf->setXY(22, $currentY - 10); $pdf->Cell(40, 5, "Overall total: ", 0, 0, "R");
+$pdf->setXY(62, $currentY - 10); $pdf->Cell(40, 5, "$ " . number_format($totalVentas, 2, ".", ","), 1, 0, "R");
+$pdf->setXY(102, $currentY - 10); $pdf->Cell(40, 5, "$ " . number_format($totalCostos, 2, ".", ","), 1, 0, "R");
+$pdf->setXY(142, $currentY - 10); $pdf->Cell(40, 5, "$ " . number_format($totalGanancias, 2, ".", ","), 1, 0, "R");
 
 //-----------------------------------------------
 
 // Generar el PDF y enviarlo al navegador
-$pdf->Output("Profits origin.pdf");
+$pdf->Output("Profits.pdf");
 
 //-----------------------------------------------

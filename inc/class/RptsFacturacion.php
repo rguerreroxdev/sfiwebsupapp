@@ -184,6 +184,28 @@ class RptsFacturacion
     //-------------------------------------------
 
     /**
+     * Ganancias sobre ventas utilizando precio de distribución
+     * 
+     * @param string $fechaInicial Fecha de inicio de emisión de facturas (formato yyyymmdd)
+     * @param string $fechaFinal Fecha final de emisión de facturas (formato yyyymmdd)
+     * @param int $sucursalId Sucursal a ser filtrada (-1 para todas las sucursales que tiene acceso el usuario)
+     * 
+     * @return array Todos los registros encontrados
+     * 
+     */
+    public function gananciasSobreVentasPrecioDistr(string $fechaInicial, string $fechaFinal, int $sucursalId): array
+    {
+        $sentenciaSql = "
+            EXECUTE SPFACREPGANANCIASOBREVENTASPRECIODISTR ?, ?, ?
+        ";
+        $datos = $this->conn->execute($sentenciaSql, [$fechaInicial, $fechaFinal, $sucursalId]);
+
+        return $datos;
+    }
+
+    //-------------------------------------------
+
+    /**
      * Ganancias sobre ventas (Con detalle por producto)
      * 
      * @param string $fechaInicial Fecha de inicio de emisión de facturas (formato yyyymmdd)
@@ -197,6 +219,28 @@ class RptsFacturacion
     {
         $sentenciaSql = "
             EXECUTE SPFACREPGANANCIASOBREVENTASDETALLE ?, ?, ?
+        ";
+        $datos = $this->conn->execute($sentenciaSql, [$fechaInicial, $fechaFinal, $sucursalId]);
+
+        return $datos;
+    }
+
+    //-------------------------------------------
+
+    /**
+     * Ganancias sobre ventas utilizando precio de distribución (Con detalle por producto)
+     * 
+     * @param string $fechaInicial Fecha de inicio de emisión de facturas (formato yyyymmdd)
+     * @param string $fechaFinal Fecha final de emisión de facturas (formato yyyymmdd)
+     * @param int $sucursalId Sucursal a ser filtrada (-1 para todas las sucursales que tiene acceso el usuario)
+     * 
+     * @return array Todos los registros encontrados
+     * 
+     */
+    public function gananciasSobreVentasDetallePrecioDistr(string $fechaInicial, string $fechaFinal, int $sucursalId): array
+    {
+        $sentenciaSql = "
+            EXECUTE SPFACREPGANANCIASOBREVENTASDETALLEPRECIODISTR ?, ?, ?
         ";
         $datos = $this->conn->execute($sentenciaSql, [$fechaInicial, $fechaFinal, $sucursalId]);
 

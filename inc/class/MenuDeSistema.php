@@ -122,11 +122,15 @@ class MenuDeSistema
         }
         else
         {
-            $opcion = "
-                <li class=\"nav-item\">
-                    <a class=\"nav-link disabled\" href=\"#\">$texto</a>
-                </li>
-            ";
+            // Para no mostrar la opción
+            $opcion = "";
+
+            // Para mostrar la opción tenue y sin vínculo
+            // $opcion = "
+            //     <li class=\"nav-item\">
+            //         <a class=\"nav-link disabled\" href=\"#\">$texto</a>
+            //     </li>
+            // ";
         }
 
         return $opcion;
@@ -157,11 +161,15 @@ class MenuDeSistema
         }
         else
         {
-            $opcion = "
-                <li class=\"nav-item\">
-                    <a class=\"nav-link dropdown-toggle disabled\" aria-disabled=\"true\">$texto</a>
-                </li>
-            ";
+            // Para no mostrar la opción
+            $opcion = "";
+
+            // Para mostrar la opción tenue y sin vínculo
+            // $opcion = "
+            //     <li class=\"nav-item\">
+            //         <a class=\"nav-link dropdown-toggle disabled\" aria-disabled=\"true\">$texto</a>
+            //     </li>
+            // ";
             return $opcion;
         }
 
@@ -180,9 +188,13 @@ class MenuDeSistema
             }
             else
             {
-                $opcion .= "
-                    <li><a class=\"dropdown-item disabled small\" href=\"#\">$texto</a></li>
-                ";
+                // Para no mostrar la opción
+                $opcion .= "";
+
+                // Para mostrar la opción tenue y sin vínculo
+                // $opcion .= "
+                //     <li><a class=\"dropdown-item disabled small\" href=\"#\">$texto</a></li>
+                // ";
             }
         }
         

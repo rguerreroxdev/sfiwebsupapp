@@ -42,7 +42,7 @@ use Shuchkin\SimpleXLSXGen;
 
 // Obtener datos
 $objReportes = new RptsFacturacion($conn);
-$datos = $objReportes->gananciasSobreVentas($fechaInicial, $fechaFinal, $sucursalId);
+$datos = $objReportes->gananciasSobreVentasDetallePrecioDistr($fechaInicial, $fechaFinal, $sucursalId);
 
 // Crear el arreglo de datos que se mostrará en Excel
 $data = array();
@@ -59,7 +59,7 @@ $sucursal = $sucursalId == -1 ? "All" : $objSucursal->nombre;
 $fechaInicial = substr($fechaInicial, 4, 2) . "-" . substr($fechaInicial, 6, 2) . "-" . substr($fechaInicial, 0, 4);
 $fechaFinal = substr($fechaFinal, 4, 2) . "-" . substr($fechaFinal, 6, 2) . "-" . substr($fechaFinal, 0, 4);
 
-array_push($data, ["<b>Profits origin</b>"]);
+array_push($data, ["<b>Profits</b>"]);
 array_push($data, ["<b>" . $empresa . "</b>"]);
 array_push($data, ["Date:", $fechaDeEmision->format("m-d-Y")]);
 array_push($data, ["Store:", $sucursal]);
@@ -69,7 +69,7 @@ array_push($data, [""]);
 
 // Encabezado de filas de datos
 array_push($data, [
-    "<b>#</b>", "<b>Date</b>", "<b>Tipe of product</b>", "<b>Sum of product sales</b>", "<b>Sum of product costs</b>", "<b>Profits</b>"
+    "<b>#</b>", "<b>Date</b>", "<b>Tipe of product</b>", "<b>Invoice #</b>", "<b>Product code</b>", "<b>Product</b>", "<b>Sale price</b>", "<b>Product cost</b>", "<b>Profit</b>"
 ]);
 
 // Agregando las filas de datos
@@ -80,17 +80,19 @@ $totalGanancias = 0;
 foreach($datos as $dato)
 {
     $conteo++;
-    $tipoDeProducto = $dato["TIPODEPRODUCTO"];
-    $totalVentas += $dato["SUMADEVENTA"];
-    $totalCostos += $dato["SUMADECOSTO"];
+    $totalVentas += $dato["PRECIODEVENTA"];
+    $totalCostos += $dato["COSTODIST"];
     $totalGanancias += $dato["GANANCIA"];
 
     array_push($data, [
         $conteo,
-        $tipoDeProducto,
         str_replace("/", "-", $dato["FECHA"]),
-        number_format($dato["SUMADEVENTA"], 2, ".", ""),
-        number_format($dato["SUMADECOSTO"], 2, ".", ""),
+        $dato["TIPODEPRODUCTO"],
+        $dato["CORRELATIVO"],
+        $dato["CODIGOINVENTARIO"],
+        $dato["PRODUCTO"],
+        number_format($dato["PRECIODEVENTA"], 2, ".", ""),
+        number_format($dato["COSTODIST"], 2, ".", ""),
         number_format($dato["GANANCIA"], 2, ".", "")
     ]);
 }
@@ -98,6 +100,9 @@ foreach($datos as $dato)
 // Mostrar total de ítems
 array_push($data, [""]);
 array_push($data, [
+    "",
+    "",
+    "",
     "",
     "",
     "Total:",
@@ -110,4 +115,4 @@ array_push($data, [
 $xlsx = SimpleXLSXGen::fromArray($data);
 
 // Enviar el archivo al navegador para descarga
-$xlsx->downloadAs('Profits origin.xlsx');
+$xlsx->downloadAs('Profits.xlsx');

@@ -87,8 +87,9 @@ class PDF extends TCPDF
         $this->SetFont("Helvetica", "", 6);
         $this->SetXY($x, $y);           $this->Cell(7, 5, '#', 1, 0, '', false);
         $this->SetXY($x +=  7, $y);     $this->Cell(40, 5, 'Platform', 1, 0, '', false);
-        $this->SetXY($x += 40, $y);     $this->Cell(40, 5, 'Quantity of products', 1, 0, '', false);
-        $this->SetXY($x += 40, $y);     $this->Cell(40, 5, 'Sum of sales', 1, 0, '', false);
+        $this->SetXY($x += 40, $y);     $this->Cell(30, 5, 'Quantity of products', 1, 0, '', false);
+        $this->SetXY($x += 30, $y);     $this->Cell(30, 5, 'Sum of sales', 1, 0, '', false);
+        $this->SetXY($x += 30, $y);     $this->Cell(40, 5, 'Referral person', 1, 0, '', false);
         $this->Ln(5);   $this->SetX(15);
     }
 
@@ -131,14 +132,15 @@ foreach ($datos as $fila)
         $fila["PLATAFORMA"],
         $fila["CONTEODEPRODUCTOS"],
         "$ " . number_format($fila["SUMADEPRECIOS"], 2, ".", ","),
+        strtoupper($fila["PERSONADEREFERENCIA"]),
     ];
 
     array_push($arrayDatosLimpios, $arrayFila);
 }
 
 // Ancho de columnas (Ver los anchos en Header)
-$anchoDeColumnas = [7, 40, 40, 40];
-$alineacionDeCelda = ["L", "L", "C", "R"];
+$anchoDeColumnas = [7, 40, 30, 30, 40];
+$alineacionDeCelda = ["L", "L", "C", "R", "L"];
 
 // Preparar valores para controlar posición de fila y columna en que se muestran datos
 $startX = 15;
@@ -208,8 +210,8 @@ if ($pdf->GetY() + 30 > $pdf->getPageHeight()) {
     $pdf->setXY($currentX, $currentY);
 }
 
-$pdf->setXY(62, $currentY - 20); $pdf->Cell(40, 5, "Total: ", 0, 0, "R");
-$pdf->setXY(102, $currentY - 20); $pdf->Cell(40, 5, "$ " . number_format($totalVentas, 2, ".", ","), 1, 0, "R");
+$pdf->setXY(62, $currentY - 20); $pdf->Cell(30, 5, "Total: ", 0, 0, "R");
+$pdf->setXY(92, $currentY - 20); $pdf->Cell(30, 5, "$ " . number_format($totalVentas, 2, ".", ","), 1, 0, "R");
 
 //-----------------------------------------------
 

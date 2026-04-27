@@ -31,6 +31,9 @@ if ($objFactura->facturaId == -1)
     header("Location: /?mod=error404");
 }
 
+// RGuerrero 06/04/2026: Definir el valor de deductible a partir de la factura con ID 1240
+define("DEDUCTIBLE", $facturaId < 1240 ? "70" : "100");
+
 //-----------------------------------------------
 
 class PDF extends TCPDF
@@ -228,7 +231,7 @@ class PDF extends TCPDF
         $this->SetFont("Helvetica", "B", 6);
         $this->SetXY(15, $y);       $this->Cell(187, 3, "1 Year Warranty through us on all appliances that does not have Manufacture Warranty. Warranty extends to 30 Miles of distance from the purchase location, customers are asked", 0, 0, "C");
         $this->SetXY(15, $y += 3);  $this->Cell(187, 3, "to bring the items if the distance exceeds 30 miles. 1 Year start at the day of pick up/delivery. No refunds, sold as-is, all sales are final. No service calls for cosmetic damages, or", 0, 0, "C");
-        $this->SetXY(15, $y += 3);  $this->Cell(187, 3, "to correct the installation of your product when self installed. A deductible of $70 will be charged at the moment you schedule a technician visit. Warranty doesn't cover service", 0, 0, "C");
+        $this->SetXY(15, $y += 3);  $this->Cell(187, 3, "to correct the installation of your product when self installed. A deductible of $" . DEDUCTIBLE . " will be charged at the moment you schedule a technician visit. Warranty doesn't cover service", 0, 0, "C");
         $this->SetXY(15, $y += 3);  $this->Cell(187, 3, "calls which don't involve malfunction or defects in the appliances. Please wait 24 hrs after delivery/pick-up to plug in your Refrigerator to allow oil fluids to settle in. I am aware", 0, 0, "C");
         $this->SetXY(15, $y += 3);  $this->Cell(187, 3, "that delivery and installation services are performed by a third-party company, which operates independently from Supreme Appliances. Supreme Appliances is not responsible for", 0, 0, "C");
         $this->SetXY(15, $y += 3);  $this->Cell(187, 3, "any damages, incidents or issues that may occur during the delivery or installation. This includes, but is not limited to, cosmetic damages to appliances, damage to property, or", 0, 0, "C");

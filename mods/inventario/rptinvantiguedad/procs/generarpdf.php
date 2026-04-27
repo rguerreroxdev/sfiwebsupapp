@@ -86,17 +86,18 @@ class PDF extends TCPDF
         $this->SetXY($x, $y);           $this->Cell(7, 5, '#', 1, 0, '', false);
         $this->SetXY($x +=  7, $y);     $this->Cell(15, 5, 'Entry date', 1, 0, '', false);
         $this->SetXY($x += 15, $y);     $this->Cell(7, 5, 'Days', 1, 0, '', false);
-        $this->SetXY($x += 7, $y);     $this->Cell(25, 5, 'Store', 1, 0, '', false);
-        $this->SetXY($x += 25, $y);     $this->Cell(15, 5, 'Code', 1, 0, '', false);
+        $this->SetXY($x +=  7, $y);     $this->Cell(25, 5, 'Store', 1, 0, '', false);
+        $this->SetXY($x += 25, $y);     $this->Cell(15, 5, 'Trns. date', 1, 0, '', false);
+        $this->SetXY($x += 15, $y);     $this->Cell(7, 5, 'Days', 1, 0, '', false);
+        $this->SetXY($x +=  7, $y);     $this->Cell(15, 5, 'Code', 1, 0, '', false);
         $this->SetXY($x += 15, $y);     $this->Cell(28, 5, 'Category', 1, 0, '', false);
         $this->SetXY($x += 28, $y);     $this->Cell(20, 5, 'Brand', 1, 0, '', false);
         $this->SetXY($x += 20, $y);     $this->Cell(23, 5, 'Model', 1, 0, '', false);
         $this->SetXY($x += 23, $y);     $this->Cell(23, 5, 'Color', 1, 0, '', false);
         $this->SetXY($x += 23, $y);     $this->Cell(41, 5, 'Description', 1, 0, '', false);
         $this->SetXY($x += 41, $y);     $this->Cell(12, 5, 'MSRP', 1, 0, '', false);
-        $this->SetXY($x += 12, $y);     $this->Cell(15, 5, 'Stk. type orig.', 1, 0, '', false);
-        $this->SetXY($x += 15, $y);     $this->Cell(10, 5, 'Stock', 1, 0, '', false);
-        $this->SetXY($x += 10, $y);     $this->Cell(10, 5, 'In transit', 1, 0, '', false);
+        $this->SetXY($x += 12, $y);     $this->Cell(10, 5, 'ST orig.', 1, 0, '', false);
+        $this->SetXY($x += 10, $y);     $this->Cell(10, 5, 'ST dist.', 1, 0, '', false);
         $this->Ln(5);   $this->SetX(15);
     }
 
@@ -135,8 +136,10 @@ foreach ($datos as $fila)
     $arrayFila = [
         $filaConteo,
         $fila["FECHADERECEPCION"],
-        $fila["DIAS"],
+        $fila["DIASRECEPCION"],
         $fila["SUCURSAL"],
+        $fila["FECHADETRASLADO"],
+        $fila["DIASTRASLADO"],
         $fila["CODIGOINVENTARIO"],
         $fila["CATEGORIA"],
         $fila["MARCA"],
@@ -145,16 +148,15 @@ foreach ($datos as $fila)
         $fila["DESCRIPCION"],
         "$ " . $fila["MSRP"],
         $fila["TIPODESTOCKORIGEN"],
-        $fila["EXISTENCIA"],
-        $fila["ENTRANSITO"]
+        $fila["TIPODESTOCKDISTRIBUCION"],
     ];
 
     array_push($arrayDatosLimpios, $arrayFila);
 }
 
 // Ancho de columnas (Ver los anchos en Header)
-$anchoDeColumnas = [7, 15, 7, 25, 15, 28, 20, 23, 23, 41, 12, 15, 10, 10];
-$alineacionDeCelda = ["L", "L", "R", "L", "L", "L", "L", "L", "L", "L", "R", "L", "R", "R"];
+$anchoDeColumnas = [7, 15, 7, 25, 15, 7, 15, 28, 20, 23, 23, 41, 12, 10, 10];
+$alineacionDeCelda = ["L", "L", "R", "L", "L", "R", "L", "L", "L", "L", "L", "L", "R", "L", "L"];
 
 // Preparar valores para controlar posición de fila y columna en que se muestran datos
 $startX = 15;

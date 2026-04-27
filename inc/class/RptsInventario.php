@@ -390,6 +390,208 @@ class RptsInventario
 
     //-------------------------------------------
 
+//      v1. Cambiada el 25/01/2026
+//    /**
+//      * Inventario, antigüedad de inventario (por sucursal y categoría)
+//      * 
+//      * @param int $usuarioId Usuario al que se le filtran las sucursales
+//      * @param int $sucursalId Sucursal a la cual se le obtiene el inventario (-1 es para mostrar todas a las que tiene acceso el usuario)
+//      * @param int $categoriaId Filtro de categoría (-1 es para mostrar todas)
+//      * @param int $dias Días de antigüedad de inventario (se buscarán los ítems que sean mayor o igual a estos días)
+//      * 
+//      * @return array Todos los registros encontrados
+//      * 
+//      */
+//     public function inventarioAntiguedad(int $usuarioId, int $sucursalId, int $categoriaId, int $dias): array
+//     {
+//         $condicionInventario = "";
+//         $condicionTransito = "";
+//         $condicionTransitoRechazo = "";
+
+//         if ($sucursalId == -1)
+//         {
+//             // Se solicitó ver todas las sucursales
+
+//             $condicionTransito = "
+//                 WHERE
+//                     T.ESTADO = 'PRO'
+//             ";
+
+//             $condicionTransitoRechazo = "
+//                 WHERE
+//                     T.ESTADO = 'LIB'
+//             ";
+//         }
+//         else
+//         {
+//             // Se solicitó ver una sucursal en específico
+//             $condicionInventario = "
+//                 WHERE
+//                     I.SUCURSALID = $sucursalId
+//                     AND DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) >= $dias
+//             ";
+
+//             $condicionTransito = "
+//                 WHERE
+//                     T.SUCURSALDESTINOID = $sucursalId
+//                     AND T.ESTADO = 'PRO'
+//                     AND DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) >= $dias
+//             ";
+
+//             $condicionTransitoRechazo = "
+//                 WHERE
+//                     T.SUCURSALORIGENID = $sucursalId
+//                     AND T.ESTADO = 'LIB'
+//                     AND DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) >= $dias
+//             ";
+//         }
+
+//         if ($categoriaId != -1)
+//         {
+//             $condicionInventario .= " AND C.CATEGORIAID = $categoriaId";
+//             $condicionTransito .= " AND C.CATEGORIAID = $categoriaId";
+//             $condicionTransitoRechazo .= " AND C.CATEGORIAID = $categoriaId";
+//         }
+
+//         // Mostrar solamente con existencias
+//         $condicionInventario .= " AND I.EXISTENCIA > 0";
+
+//         $sentenciaSql = "
+//             WITH
+//                 DATOS (INVENTARIOID, CODIGOINVENTARIO, CATEGORIA, MARCA, MODELO, SERIE, COLOR, DESCRIPCION, EXISTENCIA, ENTRANSITO, MSRP,
+//                 PORCENTAJETIPODESTOCKORIGEN, TIPODESTOCKORIGEN, SUCURSAL, FECHADERECEPCIONORDEN, FECHADERECEPCION, DIAS)
+//             AS
+//             (
+//                 -- Existencias de inventario	
+//                 SELECT
+//                     I.INVENTARIOID,
+//                     I.CODIGOINVENTARIO,
+//                     C.NOMBRE AS CATEGORIA,
+//                     M.NOMBRE AS MARCA,
+//                     P.MODELO,
+//                     I.SERIE,
+//                     COL.NOMBRE AS COLOR,
+//                     P.DESCRIPCION,
+//                     I.EXISTENCIA,
+//                     0 AS ENTRANSITO,
+//                     I.MSRP,
+//                     I.PORCENTAJETIPODESTOCKORIGEN,
+//                     TSO.NOMBRECORTO AS TIPODESTOCKORIGEN,
+//                     S.NOMBRE AS SUCURSAL,
+//                     RC.FECHADERECEPCION AS FECHADERECEPCIONORDEN,
+//                     CONVERT(VARCHAR, RC.FECHADERECEPCION, 101) AS FECHADERECEPCION,
+//                     DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) AS DIAS
+//                 FROM
+//                     INVINVENTARIO I
+//                     JOIN INVPRODUCTOS P ON P.PRODUCTOID=I.PRODUCTOID
+//                     JOIN INVMARCAS M ON M.MARCAID=P.MARCAID
+//                     JOIN INVCATEGORIAS C ON C.CATEGORIAID=P.CATEGORIAID
+//                     JOIN INVTIPOSDESTOCK TSO ON TSO.TIPODESTOCKID=I.TIPODESTOCKORIGENID
+//                     JOIN INVCOLORES COL ON COL.COLORID=P.COLORID
+//                     JOIN CONFSUCURSALES S ON S.SUCURSALID=I.SUCURSALID
+//                     JOIN ACCSUCURSALESXUSUARIO SXU ON SXU.SUCURSALID=S.SUCURSALID AND SXU.USUARIOID=$usuarioId
+//                     JOIN INVRECEPCIONESDECARGADETALLE RCD ON RCD.RECEPCIONDECARGADETALLEID=I.RECEPCIONDECARGADETALLEID
+//                     JOIN INVRECEPCIONESDECARGA RC ON RC.RECEPCIONDECARGAID=RCD.RECEPCIONDECARGAID
+                
+//                 $condicionInventario
+
+//                 UNION
+
+//                 -- En traslado por llegar
+//                 SELECT
+//                     I.INVENTARIOID,
+//                     I.CODIGOINVENTARIO,
+//                     C.NOMBRE AS CATEGORIA,
+//                     M.NOMBRE AS MARCA,
+//                     P.MODELO,
+//                     I.SERIE,
+//                     COL.NOMBRE AS COLOR,
+//                     P.DESCRIPCION,
+//                     0 AS EXISTENCIA,
+//                     1 AS ENTRANSITO,
+//                     I.MSRP,
+//                     I.PORCENTAJETIPODESTOCKORIGEN,
+//                     TSO.NOMBRECORTO AS TIPODESTOCKORIGEN,
+//                     SD.NOMBRE AS SUCURSAL,
+//                     RC.FECHADERECEPCION AS FECHADERECEPCIONORDEN,
+//                     CONVERT(VARCHAR, RC.FECHADERECEPCION, 101) AS FECHADERECEPCION,
+//                     DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) AS DIAS
+//                 FROM
+//                     INVTRASLADOS T
+//                     JOIN INVTRASLADOSDETALLE TD ON TD.TRASLADOID=T.TRASLADOID
+//                     JOIN INVINVENTARIO I ON I.INVENTARIOID=TD.INVENTARIOID
+//                     JOIN INVPRODUCTOS P ON P.PRODUCTOID=I.PRODUCTOID
+//                     JOIN INVMARCAS M ON M.MARCAID=P.MARCAID
+//                     JOIN INVCATEGORIAS C ON C.CATEGORIAID=P.CATEGORIAID
+//                     JOIN INVTIPOSDESTOCK TSO ON TSO.TIPODESTOCKID=I.TIPODESTOCKORIGENID
+//                     JOIN INVCOLORES COL ON COL.COLORID=P.COLORID
+//                     JOIN CONFSUCURSALES SD ON SD.SUCURSALID=T.SUCURSALDESTINOID
+//                     JOIN ACCSUCURSALESXUSUARIO SXU ON SXU.SUCURSALID=T.SUCURSALDESTINOID AND SXU.USUARIOID=$usuarioId
+//                     JOIN INVRECEPCIONESDECARGADETALLE RCD ON RCD.RECEPCIONDECARGADETALLEID=I.RECEPCIONDECARGADETALLEID
+//                     JOIN INVRECEPCIONESDECARGA RC ON RC.RECEPCIONDECARGAID=RCD.RECEPCIONDECARGAID
+                
+//                 $condicionTransito
+
+//                 UNION
+
+//                 -- En traslado rechazado
+//                 SELECT
+//                     I.INVENTARIOID,
+//                     I.CODIGOINVENTARIO,
+//                     C.NOMBRE AS CATEGORIA,
+//                     M.NOMBRE AS MARCA,
+//                     P.MODELO,
+//                     I.SERIE,
+//                     COL.NOMBRE AS COLOR,
+//                     P.DESCRIPCION,
+//                     0 AS EXISTENCIA,
+//                     1 AS ENTRANSITO,
+//                     I.MSRP,
+//                     I.PORCENTAJETIPODESTOCKORIGEN,
+//                     TSO.NOMBRECORTO AS TIPODESTOCKORIGEN,
+//                     SO.NOMBRE AS SUCURSAL,
+//                     RC.FECHADERECEPCION AS FECHADERECEPCIONORDEN,
+//                     CONVERT(VARCHAR, RC.FECHADERECEPCION, 101) AS FECHADERECEPCION,
+//                     DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) AS DIAS
+//                 FROM
+//                     INVTRASLADOS T
+//                     JOIN INVTRASLADOSDETALLE TD ON TD.TRASLADOID=T.TRASLADOID
+//                     JOIN INVINVENTARIO I ON I.INVENTARIOID=TD.INVENTARIOID
+//                     JOIN INVPRODUCTOS P ON P.PRODUCTOID=I.PRODUCTOID
+//                     JOIN INVMARCAS M ON M.MARCAID=P.MARCAID
+//                     JOIN INVCATEGORIAS C ON C.CATEGORIAID=P.CATEGORIAID
+//                     JOIN INVTIPOSDESTOCK TSO ON TSO.TIPODESTOCKID=I.TIPODESTOCKORIGENID
+//                     JOIN INVCOLORES COL ON COL.COLORID=P.COLORID
+//                     JOIN CONFSUCURSALES SO ON SO.SUCURSALID=T.SUCURSALORIGENID
+//                     JOIN ACCSUCURSALESXUSUARIO SXU ON SXU.SUCURSALID=T.SUCURSALORIGENID AND SXU.USUARIOID=$usuarioId
+//                     JOIN INVRECEPCIONESDECARGADETALLE RCD ON RCD.RECEPCIONDECARGADETALLEID=I.RECEPCIONDECARGADETALLEID
+//                     JOIN INVRECEPCIONESDECARGA RC ON RC.RECEPCIONDECARGAID=RCD.RECEPCIONDECARGAID
+                
+//                 $condicionTransitoRechazo
+//             )
+
+//             SELECT
+//                 INVENTARIOID, CODIGOINVENTARIO, CATEGORIA, MARCA, MODELO, SERIE, COLOR, DESCRIPCION, MSRP, PORCENTAJETIPODESTOCKORIGEN, TIPODESTOCKORIGEN, SUCURSAL,
+//                 FECHADERECEPCIONORDEN, FECHADERECEPCION, DIAS, SUM(EXISTENCIA) AS EXISTENCIA, SUM(ENTRANSITO) AS ENTRANSITO
+//             FROM
+//                 DATOS
+//             GROUP BY
+//                 INVENTARIOID, CODIGOINVENTARIO, CATEGORIA, MARCA, MODELO, SERIE, COLOR, DESCRIPCION, MSRP, PORCENTAJETIPODESTOCKORIGEN, TIPODESTOCKORIGEN, SUCURSAL,
+//                 FECHADERECEPCIONORDEN, FECHADERECEPCION, DIAS
+//             ORDER BY
+//                 FECHADERECEPCIONORDEN,
+//                 SUCURSAL,
+//                 CATEGORIA,
+//                 MARCA,
+//                 CODIGOINVENTARIO
+//         ";
+
+//         $datos = $this->conn->with($sentenciaSql, []);
+        
+//         return $datos;
+//     }
+
+//  v2. Creada el 25/01/2026
    /**
      * Inventario, antigüedad de inventario (por sucursal y categoría)
      * 
@@ -403,189 +605,90 @@ class RptsInventario
      */
     public function inventarioAntiguedad(int $usuarioId, int $sucursalId, int $categoriaId, int $dias): array
     {
-        $condicionInventario = "";
-        $condicionTransito = "";
-        $condicionTransitoRechazo = "";
+        $condicion = "";
 
-        if ($sucursalId == -1)
-        {
-            // Se solicitó ver todas las sucursales
-
-            $condicionTransito = "
-                WHERE
-                    T.ESTADO = 'PRO'
-            ";
-
-            $condicionTransitoRechazo = "
-                WHERE
-                    T.ESTADO = 'LIB'
-            ";
-        }
-        else
+        if ($sucursalId != -1)
         {
             // Se solicitó ver una sucursal en específico
-            $condicionInventario = "
-                WHERE
-                    I.SUCURSALID = $sucursalId
-                    AND DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) >= $dias
-            ";
 
-            $condicionTransito = "
-                WHERE
-                    T.SUCURSALDESTINOID = $sucursalId
-                    AND T.ESTADO = 'PRO'
-                    AND DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) >= $dias
-            ";
-
-            $condicionTransitoRechazo = "
-                WHERE
-                    T.SUCURSALORIGENID = $sucursalId
-                    AND T.ESTADO = 'LIB'
-                    AND DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) >= $dias
+            $condicion = "
+                AND I.SUCURSALID = $sucursalId
             ";
         }
 
         if ($categoriaId != -1)
         {
-            $condicionInventario .= " AND C.CATEGORIAID = $categoriaId";
-            $condicionTransito .= " AND C.CATEGORIAID = $categoriaId";
-            $condicionTransitoRechazo .= " AND C.CATEGORIAID = $categoriaId";
+            // Se solicitó ver una categoría en específico
+
+            $condicion .= "
+                AND CAT.CATEGORIAID = $categoriaId
+            ";
         }
 
-        // Mostrar solamente con existencias
-        $condicionInventario .= " AND I.EXISTENCIA > 0";
-
         $sentenciaSql = "
-            WITH
-                DATOS (INVENTARIOID, CODIGOINVENTARIO, CATEGORIA, MARCA, MODELO, SERIE, COLOR, DESCRIPCION, EXISTENCIA, ENTRANSITO, MSRP,
-                PORCENTAJETIPODESTOCKORIGEN, TIPODESTOCKORIGEN, SUCURSAL, FECHADERECEPCIONORDEN, FECHADERECEPCION, DIAS)
-            AS
-            (
-                -- Existencias de inventario	
-                SELECT
-                    I.INVENTARIOID,
-                    I.CODIGOINVENTARIO,
-                    C.NOMBRE AS CATEGORIA,
-                    M.NOMBRE AS MARCA,
-                    P.MODELO,
-                    I.SERIE,
-                    COL.NOMBRE AS COLOR,
-                    P.DESCRIPCION,
-                    I.EXISTENCIA,
-                    0 AS ENTRANSITO,
-                    I.MSRP,
-                    I.PORCENTAJETIPODESTOCKORIGEN,
-                    TSO.NOMBRECORTO AS TIPODESTOCKORIGEN,
-                    S.NOMBRE AS SUCURSAL,
-                    RC.FECHADERECEPCION AS FECHADERECEPCIONORDEN,
-                    CONVERT(VARCHAR, RC.FECHADERECEPCION, 101) AS FECHADERECEPCION,
-                    DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) AS DIAS
-                FROM
-                    INVINVENTARIO I
-                    JOIN INVPRODUCTOS P ON P.PRODUCTOID=I.PRODUCTOID
-                    JOIN INVMARCAS M ON M.MARCAID=P.MARCAID
-                    JOIN INVCATEGORIAS C ON C.CATEGORIAID=P.CATEGORIAID
-                    JOIN INVTIPOSDESTOCK TSO ON TSO.TIPODESTOCKID=I.TIPODESTOCKORIGENID
-                    JOIN INVCOLORES COL ON COL.COLORID=P.COLORID
-                    JOIN CONFSUCURSALES S ON S.SUCURSALID=I.SUCURSALID
-                    JOIN ACCSUCURSALESXUSUARIO SXU ON SXU.SUCURSALID=S.SUCURSALID AND SXU.USUARIOID=$usuarioId
-                    JOIN INVRECEPCIONESDECARGADETALLE RCD ON RCD.RECEPCIONDECARGADETALLEID=I.RECEPCIONDECARGADETALLEID
-                    JOIN INVRECEPCIONESDECARGA RC ON RC.RECEPCIONDECARGAID=RCD.RECEPCIONDECARGAID
-                
-                $condicionInventario
-
-                UNION
-
-                -- En traslado por llegar
-                SELECT
-                    I.INVENTARIOID,
-                    I.CODIGOINVENTARIO,
-                    C.NOMBRE AS CATEGORIA,
-                    M.NOMBRE AS MARCA,
-                    P.MODELO,
-                    I.SERIE,
-                    COL.NOMBRE AS COLOR,
-                    P.DESCRIPCION,
-                    0 AS EXISTENCIA,
-                    1 AS ENTRANSITO,
-                    I.MSRP,
-                    I.PORCENTAJETIPODESTOCKORIGEN,
-                    TSO.NOMBRECORTO AS TIPODESTOCKORIGEN,
-                    SD.NOMBRE AS SUCURSAL,
-                    RC.FECHADERECEPCION AS FECHADERECEPCIONORDEN,
-                    CONVERT(VARCHAR, RC.FECHADERECEPCION, 101) AS FECHADERECEPCION,
-                    DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) AS DIAS
-                FROM
-                    INVTRASLADOS T
-                    JOIN INVTRASLADOSDETALLE TD ON TD.TRASLADOID=T.TRASLADOID
-                    JOIN INVINVENTARIO I ON I.INVENTARIOID=TD.INVENTARIOID
-                    JOIN INVPRODUCTOS P ON P.PRODUCTOID=I.PRODUCTOID
-                    JOIN INVMARCAS M ON M.MARCAID=P.MARCAID
-                    JOIN INVCATEGORIAS C ON C.CATEGORIAID=P.CATEGORIAID
-                    JOIN INVTIPOSDESTOCK TSO ON TSO.TIPODESTOCKID=I.TIPODESTOCKORIGENID
-                    JOIN INVCOLORES COL ON COL.COLORID=P.COLORID
-                    JOIN CONFSUCURSALES SD ON SD.SUCURSALID=T.SUCURSALDESTINOID
-                    JOIN ACCSUCURSALESXUSUARIO SXU ON SXU.SUCURSALID=T.SUCURSALDESTINOID AND SXU.USUARIOID=$usuarioId
-                    JOIN INVRECEPCIONESDECARGADETALLE RCD ON RCD.RECEPCIONDECARGADETALLEID=I.RECEPCIONDECARGADETALLEID
-                    JOIN INVRECEPCIONESDECARGA RC ON RC.RECEPCIONDECARGAID=RCD.RECEPCIONDECARGAID
-                
-                $condicionTransito
-
-                UNION
-
-                -- En traslado rechazado
-                SELECT
-                    I.INVENTARIOID,
-                    I.CODIGOINVENTARIO,
-                    C.NOMBRE AS CATEGORIA,
-                    M.NOMBRE AS MARCA,
-                    P.MODELO,
-                    I.SERIE,
-                    COL.NOMBRE AS COLOR,
-                    P.DESCRIPCION,
-                    0 AS EXISTENCIA,
-                    1 AS ENTRANSITO,
-                    I.MSRP,
-                    I.PORCENTAJETIPODESTOCKORIGEN,
-                    TSO.NOMBRECORTO AS TIPODESTOCKORIGEN,
-                    SO.NOMBRE AS SUCURSAL,
-                    RC.FECHADERECEPCION AS FECHADERECEPCIONORDEN,
-                    CONVERT(VARCHAR, RC.FECHADERECEPCION, 101) AS FECHADERECEPCION,
-                    DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) AS DIAS
-                FROM
-                    INVTRASLADOS T
-                    JOIN INVTRASLADOSDETALLE TD ON TD.TRASLADOID=T.TRASLADOID
-                    JOIN INVINVENTARIO I ON I.INVENTARIOID=TD.INVENTARIOID
-                    JOIN INVPRODUCTOS P ON P.PRODUCTOID=I.PRODUCTOID
-                    JOIN INVMARCAS M ON M.MARCAID=P.MARCAID
-                    JOIN INVCATEGORIAS C ON C.CATEGORIAID=P.CATEGORIAID
-                    JOIN INVTIPOSDESTOCK TSO ON TSO.TIPODESTOCKID=I.TIPODESTOCKORIGENID
-                    JOIN INVCOLORES COL ON COL.COLORID=P.COLORID
-                    JOIN CONFSUCURSALES SO ON SO.SUCURSALID=T.SUCURSALORIGENID
-                    JOIN ACCSUCURSALESXUSUARIO SXU ON SXU.SUCURSALID=T.SUCURSALORIGENID AND SXU.USUARIOID=$usuarioId
-                    JOIN INVRECEPCIONESDECARGADETALLE RCD ON RCD.RECEPCIONDECARGADETALLEID=I.RECEPCIONDECARGADETALLEID
-                    JOIN INVRECEPCIONESDECARGA RC ON RC.RECEPCIONDECARGAID=RCD.RECEPCIONDECARGAID
-                
-                $condicionTransitoRechazo
-            )
-
             SELECT
-                INVENTARIOID, CODIGOINVENTARIO, CATEGORIA, MARCA, MODELO, SERIE, COLOR, DESCRIPCION, MSRP, PORCENTAJETIPODESTOCKORIGEN, TIPODESTOCKORIGEN, SUCURSAL,
-                FECHADERECEPCIONORDEN, FECHADERECEPCION, DIAS, SUM(EXISTENCIA) AS EXISTENCIA, SUM(ENTRANSITO) AS ENTRANSITO
+                I.INVENTARIOID AS INVENTARIOID,
+                RC.FECHADERECEPCION AS FECHADERECEPCIONORDEN,
+                CONVERT(VARCHAR, RC.FECHADERECEPCION, 101) AS FECHADERECEPCION,
+                DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE()) AS DIASRECEPCION,
+                S.NOMBRE AS SUCURSAL,
+                I.CODIGOINVENTARIO AS CODIGOINVENTARIO,
+                ISNULL(T.FECHADESTINO, RC.FECHADERECEPCION) AS FECHADETRASLADOORDEN,
+                ISNULL(CONVERT(VARCHAR, T.FECHADESTINO, 101), CONVERT(VARCHAR, RC.FECHADERECEPCION, 101)) AS FECHADETRASLADO,
+                ISNULL(DATEDIFF(DAY, T.FECHADESTINO, GETDATE()), DATEDIFF(DAY, RC.FECHADERECEPCION, GETDATE())) AS DIASTRASLADO,
+                CAT.NOMBRE AS CATEGORIA,
+                M.NOMBRE AS MARCA,
+                P.MODELO AS MODELO,
+                I.SERIE AS SERIE,
+                COL.NOMBRE AS COLOR,
+                P.DESCRIPCION AS DESCRIPCION,
+                I.MSRP AS MSRP,
+                I.PORCENTAJETIPODESTOCKORIGEN,
+	            I.PORCENTAJETIPODESTOCKDIST,
+                TSO.NOMBRECORTO AS TIPODESTOCKORIGEN,
+                TSD.NOMBRECORTO AS TIPODESTOCKDISTRIBUCION
             FROM
-                DATOS
-            GROUP BY
-                INVENTARIOID, CODIGOINVENTARIO, CATEGORIA, MARCA, MODELO, SERIE, COLOR, DESCRIPCION, MSRP, PORCENTAJETIPODESTOCKORIGEN, TIPODESTOCKORIGEN, SUCURSAL,
-                FECHADERECEPCIONORDEN, FECHADERECEPCION, DIAS
+                INVINVENTARIO I
+                JOIN INVPRODUCTOS P ON P.PRODUCTOID=I.PRODUCTOID
+                JOIN INVMARCAS M ON M.MARCAID=P.MARCAID
+                JOIN INVCATEGORIAS CAT ON CAT.CATEGORIAID=P.CATEGORIAID
+                JOIN INVTIPOSDESTOCK TSO ON TSO.TIPODESTOCKID=I.TIPODESTOCKORIGENID
+                JOIN INVTIPOSDESTOCK TSD ON TSD.TIPODESTOCKID=I.TIPODESTOCKDISTID
+                JOIN INVCOLORES COL ON COL.COLORID=P.COLORID
+                JOIN CONFSUCURSALES S ON S.SUCURSALID=I.SUCURSALID
+                JOIN ACCSUCURSALESXUSUARIO SXU ON SXU.SUCURSALID=S.SUCURSALID AND SXU.USUARIOID=$usuarioId
+                JOIN INVRECEPCIONESDECARGADETALLE RCD ON RCD.RECEPCIONDECARGADETALLEID=I.RECEPCIONDECARGADETALLEID
+                JOIN INVRECEPCIONESDECARGA RC ON RC.RECEPCIONDECARGAID=RCD.RECEPCIONDECARGAID
+                OUTER APPLY (
+                    SELECT TOP 1
+                        T.TRASLADOID AS TRASLADOID,
+                        TD.TRASLADODETALLEID AS TRASLADODETALLEID,
+                        T.FECHADESTINO AS FECHADESTINO
+                    FROM
+                        INVTRASLADOS T
+                        JOIN INVTRASLADOSDETALLE TD ON TD.TRASLADOID=T.TRASLADOID
+                    WHERE
+                        T.SUCURSALDESTINOID=S.SUCURSALID
+                        AND TD.INVENTARIOID=I.INVENTARIOID
+                        AND T.ESTADO='PRD'
+                    ORDER BY
+                        FECHADESTINO DESC
+                ) T
+            WHERE
+                I.EXISTENCIA > 0
+                
+                $condicion
+
+                AND DATEDIFF(DAY, T.FECHADESTINO, GETDATE()) >= $dias
             ORDER BY
-                FECHADERECEPCIONORDEN,
+                FECHADETRASLADOORDEN,
                 SUCURSAL,
                 CATEGORIA,
                 MARCA,
                 CODIGOINVENTARIO
         ";
 
-        $datos = $this->conn->with($sentenciaSql, []);
+        $datos = $this->conn->select($sentenciaSql, []);
         
         return $datos;
     }

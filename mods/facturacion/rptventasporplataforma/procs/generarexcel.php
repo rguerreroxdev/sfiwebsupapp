@@ -69,7 +69,7 @@ array_push($data, [""]);
 
 // Encabezado de filas de datos
 array_push($data, [
-    "<b>#</b>", "<b>Platform</b>", "<b>Quantity of products</b>", "<b>Sum of sales</b>"
+    "<b>#</b>", "<b>Platform</b>", "<b>Quantity of products</b>", "<b>Sum of sales</b>", "<b>Referral person</b>"
 ]);
 
 // Agregando las filas de datos
@@ -84,7 +84,8 @@ foreach($datos as $dato)
         $conteo,
         $dato["PLATAFORMA"],
         $dato["CONTEODEPRODUCTOS"],
-        $dato["SUMADEPRECIOS"]
+        $dato["SUMADEPRECIOS"],
+        strtoupper($dato["PERSONADEREFERENCIA"])
     ]);
 }
 

@@ -67,9 +67,9 @@ array_push($data, [""]);
 
 // Encabezado de filas de datos
 array_push($data, [
-    "<b>#</b>", "<b>Entry date</b>", "<b>Days</b>", "<b>Store</b>", "<b>Code</b>", "<b>Category</b>", "<b>Brand</b>",
+    "<b>#</b>", "<b>Entry date</b>", "<b>Days</b>", "<b>Store</b>", "<b>Trns. date</b>", "<b>Days</b>", "<b>Code</b>", "<b>Category</b>", "<b>Brand</b>",
     "<b>Model</b>", "<b>Color</b>", "<b>Description</b>",
-    "<b>MSRP $</b>", "<b>Stock type orig.</b>", "<b>Stock", "<b>In transit</b>",
+    "<b>MSRP $</b>", "<b>ST orig.</b>", "<b>ST dist."
 ]);
 
 // Agregando las filas de datos
@@ -80,9 +80,10 @@ foreach($datos as $dato)
 
     array_push($data, [
         $conteo,
-        str_replace("/", "-", $dato["FECHADERECEPCION"]), $dato["DIAS"], $dato["SUCURSAL"], $dato["CODIGOINVENTARIO"], $dato["CATEGORIA"], $dato["MARCA"],
+        str_replace("/", "-", $dato["FECHADERECEPCION"]), $dato["DIASRECEPCION"], $dato["SUCURSAL"], str_replace("/", "-", $dato["FECHADETRASLADO"]), $dato["DIASTRASLADO"],
+        $dato["CODIGOINVENTARIO"], $dato["CATEGORIA"], $dato["MARCA"],
         $dato["MODELO"], $dato["COLOR"], $dato["DESCRIPCION"],
-        $dato["MSRP"], $dato["TIPODESTOCKORIGEN"], $dato["EXISTENCIA"], $dato["ENTRANSITO"]
+        $dato["MSRP"], $dato["TIPODESTOCKORIGEN"], $dato["TIPODESTOCKDISTRIBUCION"]
     ]);
 }
 
